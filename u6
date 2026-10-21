@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Unit 6: Rescuing Relics — Premium Edition</title>
+<style>
+:root{
+  --bg:#f7f3ee;
+  --bg2:#efe8df;
+  --panel:#fffdfb;
+  --panel-2:rgba(255,255,255,.78);
+  --ink:#1f1d1a;
+  --muted:#6c665f;
+  --line:#e6ddd1;
+  --brand:#6d3b2d;
+  --brand-2:#9f684c;
+  --accent:#c79a63;
+  --accent-2:#e5c89f;
+  --success:#18794e;
+  --danger:#b42318;
+  --shadow:0 20px 60px rgba(60,35,10,.10);
+  --radius:24px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family: Inter, "Noto Sans Thai", "Segoe UI", Tahoma, sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(199,154,99,.18), transparent 30%),
+    radial-gradient(circle at top right, rgba(109,59,45,.10), transparent 28%),
+    linear-gradient(180deg, var(--bg), #fbf8f4 32%, var(--bg2));
+}
+.shell{display:grid;grid-template-columns:300px 1fr;min-height:100vh}
+.sidebar{
+  position:sticky;top:0;height:100vh;padding:24px 20px;
+  background:linear-gradient(180deg, rgba(60,31,22,.98), rgba(89,49,36,.95));
+  color:#fff;border-right:1px solid rgba(255,255,255,.08)
+}
+.brandbox{
+  padding:20px;border-radius:22px;
+  background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12);
+  margin-bottom:18px
+}
+.brandbox h1{font-size:28px;line-height:1.05;margin:0 0 8px;font-weight:900;letter-spacing:-.02em}
+.brandbox p{margin:0;color:#e7d9c8;line-height:1.5;font-size:14px}
+.navwrap{display:flex;flex-direction:column;gap:8px;margin-top:18px;max-height:calc(100vh - 220px);overflow:auto;padding-right:4px}
+.navbtn{
+  width:100%;text-align:left;padding:12px 14px;border:0;border-radius:14px;cursor:pointer;
+  background:transparent;color:#f2ebe4;font-size:14px;line-height:1.35;transition:.2s ease
+}
+.navbtn:hover,.navbtn.active{
+  background:linear-gradient(90deg, rgba(229,200,159,.18), rgba(255,255,255,.08));
+  color:#fff;transform:translateX(2px)
+}
+.navbtn small{display:block;color:#d3c1ad;font-size:12px;margin-top:2px}
+.main{padding:28px}
+.hero{
+  background:linear-gradient(135deg, rgba(255,255,255,.82), rgba(255,250,245,.74));
+  border:1px solid rgba(255,255,255,.85);
+  backdrop-filter: blur(10px);
+  box-shadow:var(--shadow);
+  border-radius:32px;padding:28px 30px;margin-bottom:22px
+}
+.hero .eyebrow{
+  display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;
+  background:#f4ede5;border:1px solid #eadccb;color:var(--brand);font-weight:800;font-size:12px;letter-spacing:.06em;text-transform:uppercase
+}
+.hero h2{margin:14px 0 8px;font-size:34px;letter-spacing:-.03em}
+.hero p{margin:0;color:var(--muted);font-size:16px;line-height:1.7}
+.page{display:none;max-width:1280px;margin:0 auto}
+.page.active{display:block}
+.surface{
+  background:var(--panel-2);
+  border:1px solid rgba(255,255,255,.85);
+  backdrop-filter:blur(9px);
+  box-shadow:var(--shadow);
+  border-radius:var(--radius);
+  padding:22px;margin-bottom:18px
+}
+.surface h3{margin:0 0 14px;font-size:22px;letter-spacing:-.02em}
+.note{color:var(--muted);font-size:14px;line-height:1.6}
+.tablewrap{overflow:auto}
+table{width:100%;border-collapse:separate;border-spacing:0;min-width:850px}
+th,td{padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:#f6efe7;color:var(--brand);font-size:14px;text-align:left}
+tr:last-child td{border-bottom:0}
+.badge{
+  display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;
+  background:#f4ede5;color:var(--brand);border:1px solid #eadccb;font-size:13px;font-weight:800
+}
+.vocab-word{display:flex;align-items:center;gap:10px;font-weight:800}
+.emoji{font-size:22px}
+.btn,.mini-btn{
+  appearance:none;border:0;cursor:pointer;border-radius:14px;font-weight:800;transition:.18s ease
+}
+.btn{
+  background:linear-gradient(135deg, var(--brand), var(--brand-2));color:#fff;padding:12px 18px;
+  box-shadow:0 10px 24px rgba(109,59,45,.20)
+}
+.btn:hover,.mini-btn:hover{transform:translateY(-1px)}
+.btn.secondary{background:#f1e7da;color:var(--brand);box-shadow:none}
+.pillrow{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.pill{
+  display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border-radius:999px;background:#f7efe6;
+  color:var(--brand);border:1px solid #eadccb;font-weight:800;font-size:14px
+}
+.quiz-stage{max-width:900px;margin:0 auto;text-align:center}
+.quiz-card{
+  padding:28px;border-radius:24px;background:linear-gradient(180deg, #fffdfb, #faf6f0);
+  border:1px solid #eadccb;box-shadow:inset 0 1px 0 rgba(255,255,255,.9)
+}
+.quiz-progress{font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand-2)}
+.quiz-hint{font-size:68px;line-height:1;margin:16px 0 10px}
+.quiz-title{font-size:30px;font-weight:900;letter-spacing:-.03em;margin:0 0 12px}
+.quiz-sub{color:var(--muted);margin-bottom:20px;line-height:1.6}
+.option-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+.choice{
+  text-align:left;padding:16px 18px;border-radius:18px;border:1px solid #e7dccd;background:#fff;
+  box-shadow:0 8px 18px rgba(34,17,4,.04);cursor:pointer;font-weight:800;color:var(--ink)
+}
+.choice span{display:inline-flex;width:30px;height:30px;border-radius:50%;align-items:center;justify-content:center;background:#f5eee7;color:var(--brand);margin-right:10px;font-size:13px}
+.choice:hover{border-color:#d4b28a;background:#fffaf3}
+.choice.correct{background:#eef9f2;border-color:#9ad0b4;color:var(--success)}
+.choice.wrong{background:#fdf2f2;border-color:#efb4af;color:var(--danger)}
+.feedback{min-height:28px;margin-top:14px;font-weight:900}
+.memory-board{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.mem-card{
+  aspect-ratio:1.38/1;border-radius:18px;padding:14px;border:1px solid #eadccb;cursor:pointer;
+  background:linear-gradient(135deg,#fffdfb,#f6eee4);box-shadow:0 10px 22px rgba(73,43,14,.05);
+  display:flex;align-items:center;justify-content:center;text-align:center;font-weight:900;user-select:none
+}
+.mem-card.front{background:linear-gradient(135deg,#6d3b2d,#9f684c);color:#fff;border-color:transparent}
+.mem-card.matched{background:#effaf2;border-color:#97d3b0;color:#186e4b}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.preview-item,.qa,.idiom,.summary-block,.sentence{
+  padding:18px;border:1px solid var(--line);border-radius:18px;background:#fffdfb;margin-bottom:12px
+}
+.under{font-weight:900;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;color:var(--brand)}
+.action-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.mini-btn{padding:10px 14px;background:#f2e9dc;color:var(--brand)}
+.mini-btn.answer{background:#edf8f1;color:var(--success)}
+.mini-btn.translation{background:#fff4e8;color:#9b5718}
+.reveal{display:none;margin-top:12px;padding:14px;border-radius:14px;line-height:1.7}
+.reveal.show{display:block}
+.reveal.answer{background:#effaf2;border:1px dashed #99d5b4}
+.reveal.translation{background:#fff8ef;border:1px dashed #e6bf8e}
+.reading-block{line-height:1.85;font-size:17px;color:#25211d}
+.word{color:#7b432e;font-weight:900;border-bottom:2px dotted #c79a63;cursor:pointer}
+.pop{
+  position:absolute;z-index:50;max-width:320px;padding:10px 12px;border-radius:14px;
+  background:#201611;color:#fff;box-shadow:0 20px 40px rgba(17,12,8,.28);font-size:14px;line-height:1.6
+}
+.thai{margin-top:8px;color:#5d564f;line-height:1.75}
+.rc-choices div{padding:3px 0}
+.summary-source{margin:8px 0;padding:13px;border-radius:14px;background:#f9f5f0;border:1px solid #eee1d0}
+.footer{margin-top:18px;color:#8b8379;font-size:13px;text-align:center;padding-bottom:18px}
+
+@media (max-width:1000px){
+  .shell{grid-template-columns:1fr}
+  .sidebar{position:relative;height:auto}
+  .main{padding:18px}
+  .option-grid,.grid2{grid-template-columns:1fr}
+  .memory-board{grid-template-columns:repeat(2,1fr)}
+  .hero h2{font-size:28px}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brandbox">
+      <h1>Unit 6<br>Rescuing Relics</h1>
+      <p>เว็บไซต์บทเรียนรูปแบบพรีเมียม<br>โทนหรูหรา อ่านง่าย ใช้งานสะดวก เหมาะสำหรับใช้สอนในชั้นเรียน</p>
+    </div>
+    <div class="navwrap" id="nav"></div>
+  </aside>
+
+  <main class="main">
+    <section class="page active" id="p1">
+      <div class="hero">
+        <span class="eyebrow">Premium Learning Experience</span>
+        <h2>Vocabulary – Unit 6: Rescuing Relics</h2>
+        <p>รวมคำศัพท์สำคัญของบท พร้อมชนิดของคำ คำอ่าน และคำแปลภาษาไทยในรูปแบบที่ดูหรูหราและอ่านง่าย</p>
+      </div>
+      <div class="surface tablewrap"><table id="vocabTable"></table></div>
+    </section>
+
+    <section class="page" id="p2">
+      <div class="hero">
+        <span class="eyebrow">Interactive Vocabulary Quiz</span>
+        <h2>ฝึกเลือกคำศัพท์</h2>
+        <p>แสดงทีละคำ มีอิโมจิช่วยใบ้ และมีคะแนนให้เห็นชัดเจน</p>
+      </div>
+      <div class="surface">
+        <div class="pillrow">
+          <div class="pill">🏆 <span id="quizScore">คะแนน: 0</span></div>
+          <div class="pill">📝 <span id="quizCount">ข้อ: 1/10</span></div>
+        </div>
+        <div id="quizBox" class="quiz-stage"></div>
+        <div style="margin-top:18px"><button class="btn secondary" onclick="startVocabQuiz()">เริ่มชุดใหม่</button></div>
+      </div>
+    </section>
+
+    <section class="page" id="p3">
+      <div class="hero">
+        <span class="eyebrow">Game</span>
+        <h2>เกมพลิกป้ายจับคู่คำศัพท์</h2>
+        <p>จับคู่คำศัพท์ภาษาอังกฤษกับคำแปลภาษาไทยแบบสนุก ๆ</p>
+      </div>
+      <div class="surface">
+        <div class="pillrow">
+          <div class="pill">🎯 <span id="matches">Matches: 0/8</span></div>
+          <div class="pill">🔁 <span id="moves">Moves: 0</span></div>
+        </div>
+        <div class="memory-board" id="memoryBoard"></div>
+        <div style="margin-top:16px"><button class="btn" onclick="newMemoryGame()">เริ่มเกมใหม่</button></div>
+      </div>
+    </section>
+
+    <section class="page" id="p4">
+      <div class="hero">
+        <span class="eyebrow">Vocabulary Preview</span>
+        <h2>Vocabulary Preview</h2>
+        <p>ขีดเส้นใต้คำเป้าหมายในประโยค และแยกปุ่ม “แสดงคำแปล” กับ “แสดงคำตอบ” ออกจากกันอย่างชัดเจน</p>
+      </div>
+      <div class="surface">
+        <div class="grid2">
+          <div>
+            <div class="summary-source"><b>a.</b> big; important</div>
+            <div class="summary-source"><b>b.</b> collected; gathered</div>
+            <div class="summary-source"><b>c.</b> showed; put out for viewing</div>
+          </div>
+          <div>
+            <div class="summary-source"><b>d.</b> changed; took away to put something new in</div>
+            <div class="summary-source"><b>e.</b> related to today</div>
+            <div class="summary-source"><b>f.</b> succeed in doing</div>
+          </div>
+        </div>
+      </div>
+      <div class="surface" id="previewBox"></div>
+    </section>
+
+    <section class="page" id="p5">
+      <div class="hero">
+        <span class="eyebrow">Reading Passage</span>
+        <h2>Unit 6: Rescuing Relics</h2>
+        <p>บทอ่านภาษาอังกฤษฉบับเต็ม</p>
+      </div>
+      <div class="surface reading-block" id="readingPlain"></div>
+    </section>
+
+    <section class="page" id="p6">
+      <div class="hero">
+        <span class="eyebrow">Clickable Glossary</span>
+        <h2>บทอ่านพร้อมศัพท์ยาก</h2>
+        <p>คลิกที่คำศัพท์เพื่อดูคำแปล และคลิกพื้นที่อื่นเพื่อซ่อนคำแปล</p>
+      </div>
+      <div class="surface reading-block" id="readingClickable"></div>
+    </section>
+
+    <section class="page" id="p7">
+      <div class="hero">
+        <span class="eyebrow">Sentence by Sentence Translation</span>
+        <h2>บทอ่านพร้อมคำแปล</h2>
+        <p>แยกประโยคภาษาอังกฤษและคำแปลไทยทีละประโยค</p>
+      </div>
+      <div class="surface" id="readingTranslated"></div>
+    </section>
+
+    <section class="page" id="p8">
+      <div class="hero">
+        <span class="eyebrow">Reading Comprehension</span>
+        <h2>Reading Comprehension</h2>
+        <p>แต่ละข้อมีปุ่มแสดงคำแปลและปุ่มแสดงคำตอบแยกกัน</p>
+      </div>
+      <div class="surface" id="rcBox"></div>
+    </section>
+
+    <section class="page" id="p9">
+      <div class="hero">
+        <span class="eyebrow">Idiomatic Expressions</span>
+        <h2>Idiomatic Expressions</h2>
+        <p>สำนวนในบทเรียนพร้อมตัวอย่าง และแบบฝึกหัดแบบซ่อนคำตอบ/คำแปล</p>
+      </div>
+      <div class="surface" id="idiomBox"></div>
+    </section>
+
+    <section class="page" id="p10">
+      <div class="hero">
+        <span class="eyebrow">Summary</span>
+        <h2>Summary</h2>
+        <p>สรุปบทอ่านโดยแยกปุ่มแสดงคำตอบและคำแปลออกจากกัน</p>
+      </div>
+      <div class="surface" id="summaryBox"></div>
+    </section>
+
+    <div class="footer">Unit 6 • Rescuing Relics • Premium Edition</div>
+  </main>
+</div>
+
+<script>
+const pages = [
+  ['Vocabulary – Unit 6: Rescuing Relics','คำศัพท์'],
+  ['ฝึกเลือกคำศัพท์','แบบฝึกอินเทอร์แอกทีฟ'],
+  ['เกมพลิกป้ายจับคู่คำศัพท์','matching game'],
+  ['Vocabulary Preview','ฝึกเดาความหมาย'],
+  ['บทอ่าน Unit 6: Rescuing Relics','reading'],
+  ['บทอ่านพร้อมศัพท์ยาก','clickable glossary'],
+  ['บทอ่านพร้อมคำแปล','translation'],
+  ['Reading Comprehension','คำถามท้ายบท'],
+  ['Idiomatic Expressions','สำนวน'],
+  ['Summary','สรุป']
+];
+
+const vocab = [
+["relic","n.","เรล-ลิก","โบราณวัตถุ / สิ่งของเก่าแก่ที่มีคุณค่า"],
+["display","v./n.","ดิส-เพลย์","จัดแสดง / การจัดแสดง"],
+["sponsor","v.","สปอน-เซอร์","สนับสนุนด้านเงินหรือทรัพยากร"],
+["government","n.","กัฟ-เวิร์น-เมินท์","รัฐบาล"],
+["protect","v.","โพร-เทคท์","ปกป้อง / คุ้มครอง"],
+["historical","adj.","ฮิส-ทอ-ริ-เคิล","เกี่ยวกับประวัติศาสตร์"],
+["treasure","n.","เทรเชอร์","สมบัติ / สิ่งล้ำค่า"],
+["private","adj.","ไพร-เวิท","ส่วนตัว / เอกชน"],
+["collector","n.","คะ-เล็ค-เทอร์","นักสะสม"],
+["collection","n.","คะ-เล็ค-ชัน","ของสะสม / การสะสม"],
+["set up","phr. v.","เซ็ต อัพ","ก่อตั้ง / จัดตั้ง"],
+["spring up","phr. v.","สปริง อัพ","เกิดขึ้นหรือผุดขึ้นอย่างรวดเร็ว"],
+["typically","adv.","ทิพ-พิ-เคิล-ลี","โดยทั่วไป / ตามปกติ"],
+["chance","n.","แชนซ์","โอกาส"],
+["lifetime","n./adj.","ไลฟ์-ไทม์","ช่วงชีวิต / ตลอดชีวิต"],
+["folk art","n. phr.","โฟล์ก อาร์ต","ศิลปะพื้นบ้าน"],
+["architectural","adj.","อาร์-คิ-เทค-เชอะ-รัล","เกี่ยวกับสถาปัตยกรรม"],
+["decoration","n.","เดค-คะ-เร-ชัน","สิ่งตกแต่ง / การตกแต่ง"],
+["capital","n.","แคพ-พิ-เทิล","เมืองหลวง"],
+["tear down","phr. v.","เทียร์ ดาวน์","รื้อถอน / ทำลายอาคาร"],
+["rescue","v.","เรส-คิว","ช่วยกู้ / ช่วยไว้"],
+["accumulate","v.","อะ-คิว-มิว-เลต","สะสม / รวบรวมเพิ่มขึ้น"],
+["sculpture","n.","สคัลพ์-เชอร์","ประติมากรรม"],
+["pier","n.","เพียร์","เสา / เสารับโครงสร้าง"],
+["carve","v.","คาร์ฟ","แกะสลัก"],
+["childhood","n.","ไชลด์-ฮูด","วัยเด็ก"],
+["rebuild","v.","รี-บิลด์","สร้างขึ้นใหม่"],
+["demolition","n.","เดม-มะ-ลิช-ชัน","การรื้อถอน / การทำลายอาคาร"],
+["site","n.","ไซต์","สถานที่ / บริเวณ"],
+["take away","phr. v.","เทค อะ-เวย์","นำออกไป / เอาออกไป"],
+["economic","adj.","อี-คะ-นอม-มิค","เกี่ยวกับเศรษฐกิจ"],
+["reform","n./v.","รี-ฟอร์ม","การปฏิรูป / ปฏิรูป"],
+["widespread","adj.","ไวด์-สเปรด","แพร่หลาย / กว้างขวาง"],
+["replace","v.","รี-เพลซ","แทนที่ / เปลี่ยนของเดิมออกแล้วใส่ของใหม่"],
+["modern","adj.","มอ-เดิร์น","สมัยใหม่ / ทันสมัย"],
+["temple","n.","เท็ม-เพิล","วัด / ศาสนสถาน"],
+["manage","v.","แมน-นิจ","สามารถทำสำเร็จ / จัดการ"],
+["major","adj.","เม-เจอร์","สำคัญ / ใหญ่"],
+["ancient","adj.","เอ็น-เชินท์","โบราณ / เก่าแก่"],
+["luckily","adv.","ลัค-คิ-ลี","โชคดีที่ / โดยโชคดี"]
+];
+
+const emojiMap = {
+"relic":"🏺","display":"🖼️","sponsor":"💰","government":"🏛️","protect":"🛡️","historical":"📜","treasure":"💎","private":"🔒","collector":"🧺","collection":"🗃️",
+"set up":"🏗️","spring up":"🌱","typically":"📌","chance":"🎟️","lifetime":"⏳","folk art":"🎨","architectural":"🏛️","decoration":"✨","capital":"🏙️","tear down":"🏚️",
+"rescue":"🛟","accumulate":"📚","sculpture":"🗿","pier":"🧱","carve":"🪵","childhood":"🧒","rebuild":"🔨","demolition":"🚧","site":"📍","take away":"📦",
+"economic":"💹","reform":"🔄","widespread":"🌍","replace":"♻️","modern":"🏢","temple":"🛕","manage":"✅","major":"⭐","ancient":"🏺","luckily":"🍀"
+};
+const getEmoji = w => emojiMap[w] || '💡';
+
+const reading = [
+"Have you ever wondered where museums get the works and relics that they put on display?",
+"If the museum is sponsored by the government, then the relics were probably collected under special laws that protect historical treasures related to that country.",
+"However, not all museums are sponsored by the government.",
+"Sometimes a private collector decides to set up a museum so that the public can view the works or relics in his or her collection.",
+"Since the 1990s, more and more of these museums set up by private collectors have sprung up in China.",
+"Typically, these private museums are small, but they give visitors the chance to see works and relics not found anywhere else.",
+"Songtang Li is one such collector who has put part of his private collection on display for the public.",
+"In 2001, Li opened his museum in an old 18th century house in Beijing.",
+"The museum displays some of the best examples of Chinese folk art he has collected over his lifetime.",
+"Many of the pieces in the collection are actually architectural decorations from old houses and buildings around China's capital.",
+"Whenever an old building was being torn down, Li would visit the site to see if there was anything from the building worth rescuing.",
+"In this way, Li managed to accumulate thousands of folk art pieces, some of which are over 1,000 years old.",
+"Li began collecting folk art sculptures when he was young.",
+"The first pieces in his collection were two gate piers that stood in front of his house.",
+"The stone piers were carved with historical designs, and Li thought of them as his two friends.",
+"During his childhood, he would sometimes even sit beside them and tell them stories.",
+"When Li was seven, the city told Li's family to get rid of the piers so that the street could be rebuilt.",
+"Rather than throwing them away, Li's father allowed his son to keep them.",
+"Thus began Li's lifetime hobby of visiting demolition sites and collecting pieces of sculpture or decorative architecture.",
+"Anything that he was allowed to take away would end up in his collection.",
+"In the late 1970s, China underwent major economic reforms.",
+"At that time, Beijing started widespread demolition and rebuilding across the city.",
+"According to Li, more than ninety percent of the old houses and temples in Beijing have since been torn down and replaced with modern buildings.",
+"Luckily, all of old Beijing's architectural folk art has not been lost.",
+"Visitors to the Songtangzhai Folk Sculpture Museum can view some of the best relics Li rescued over the years."
+];
+
+const thaiReading = [
+"คุณเคยสงสัยไหมว่าพิพิธภัณฑ์ได้ผลงานและโบราณวัตถุที่นำมาจัดแสดงมาจากที่ใด",
+"หากพิพิธภัณฑ์ได้รับการสนับสนุนจากรัฐบาล โบราณวัตถุเหล่านั้นก็น่าจะถูกรวบรวมภายใต้กฎหมายพิเศษที่คุ้มครองสมบัติทางประวัติศาสตร์ที่เกี่ยวข้องกับประเทศนั้น",
+"อย่างไรก็ตาม พิพิธภัณฑ์ไม่ได้รับการสนับสนุนจากรัฐบาลทุกแห่ง",
+"บางครั้งนักสะสมเอกชนตัดสินใจก่อตั้งพิพิธภัณฑ์ เพื่อให้ประชาชนสามารถชมผลงานหรือโบราณวัตถุในของสะสมของตนได้",
+"ตั้งแต่ทศวรรษ 1990 เป็นต้นมา พิพิธภัณฑ์ที่ก่อตั้งโดยนักสะสมเอกชนเหล่านี้ได้เกิดขึ้นเพิ่มมากขึ้นในประเทศจีน",
+"โดยทั่วไป พิพิธภัณฑ์เอกชนเหล่านี้มีขนาดเล็ก แต่เปิดโอกาสให้ผู้เข้าชมได้เห็นผลงานและโบราณวัตถุที่ไม่สามารถพบได้จากที่อื่น",
+"ซ่งถัง หลี่ เป็นนักสะสมคนหนึ่งที่นำของสะสมส่วนตัวบางส่วนมาจัดแสดงให้สาธารณชนชม",
+"ในปี 2001 หลี่เปิดพิพิธภัณฑ์ของเขาในบ้านเก่าสมัยศตวรรษที่ 18 ในกรุงปักกิ่ง",
+"พิพิธภัณฑ์จัดแสดงตัวอย่างศิลปะพื้นบ้านจีนที่ดีที่สุดบางส่วน ซึ่งเขาสะสมมาตลอดชีวิต",
+"สิ่งของหลายชิ้นในคอลเลกชันเป็นของตกแต่งทางสถาปัตยกรรมจากบ้านและอาคารเก่ารอบเมืองหลวงของจีน",
+"เมื่อใดก็ตามที่อาคารเก่ากำลังถูกรื้อถอน หลี่จะไปยังสถานที่นั้นเพื่อดูว่ามีสิ่งใดจากอาคารที่ควรค่าแก่การช่วยกู้ไว้หรือไม่",
+"ด้วยวิธีนี้ หลี่สามารถสะสมงานศิลปะพื้นบ้านได้หลายพันชิ้น โดยบางชิ้นมีอายุมากกว่า 1,000 ปี",
+"หลี่เริ่มสะสมประติมากรรมศิลปะพื้นบ้านตั้งแต่เขายังเด็ก",
+"ของสะสมชิ้นแรก ๆ ของเขาคือเสาประตูหินสองต้นที่ตั้งอยู่หน้าบ้าน",
+"เสาหินเหล่านั้นถูกแกะสลักด้วยลวดลายทางประวัติศาสตร์ และหลี่คิดว่าพวกมันเป็นเหมือนเพื่อนสองคนของเขา",
+"ในช่วงวัยเด็ก บางครั้งเขาถึงกับนั่งข้างเสาเหล่านั้นและเล่าเรื่องให้พวกมันฟัง",
+"เมื่อหลี่อายุเจ็ดขวบ ทางเมืองบอกให้ครอบครัวของเขานำเสาเหล่านั้นออก เพื่อที่จะสร้างถนนขึ้นใหม่",
+"แทนที่จะทิ้งเสาเหล่านั้นไป พ่อของหลี่อนุญาตให้ลูกชายเก็บมันไว้",
+"นั่นจึงเป็นจุดเริ่มต้นของงานอดิเรกตลอดชีวิตของหลี่ คือการไปยังสถานที่รื้อถอนและเก็บชิ้นส่วนประติมากรรมหรือสถาปัตยกรรมตกแต่ง",
+"สิ่งใดก็ตามที่เขาได้รับอนุญาตให้นำออกมา ก็จะกลายเป็นส่วนหนึ่งของของสะสมของเขา",
+"ในช่วงปลายทศวรรษ 1970 ประเทศจีนได้ดำเนินการปฏิรูปเศรษฐกิจครั้งสำคัญ",
+"ในเวลานั้น กรุงปักกิ่งเริ่มมีการรื้อถอนและสร้างใหม่อย่างกว้างขวางทั่วทั้งเมือง",
+"ตามคำกล่าวของหลี่ บ้านเก่าและวัดในปักกิ่งมากกว่าร้อยละ 90 ถูกทุบทิ้งและแทนที่ด้วยอาคารสมัยใหม่ตั้งแต่นั้นมา",
+"โชคดีที่ศิลปะพื้นบ้านทางสถาปัตยกรรมของปักกิ่งเก่าไม่ได้สูญหายไปทั้งหมด",
+"ผู้เยี่ยมชมพิพิธภัณฑ์ประติมากรรมพื้นบ้านซ่งถังไจ๋สามารถชมโบราณวัตถุที่ดีที่สุดบางส่วนซึ่งหลี่ช่วยกู้ไว้ตลอดหลายปีที่ผ่านมา"
+];
+
+const preview = [
+["He visited a museum that displayed postage stamps from around the world.","displayed","c","เขาไปเยี่ยมพิพิธภัณฑ์แห่งหนึ่งที่จัดแสดงแสตมป์จากทั่วโลก"],
+["I like ancient sculptures more than modern sculptures.","modern","e","ฉันชอบประติมากรรมโบราณมากกว่าประติมากรรมสมัยใหม่"],
+["The city replaced the old brick street with a smooth new street.","replaced","d","เมืองได้เปลี่ยนถนนอิฐเก่าให้เป็นถนนสายใหม่ที่เรียบ"],
+["My friend has accumulated more than 2,000 comic books in his collection.","accumulated","b","เพื่อนของฉันสะสมหนังสือการ์ตูนมากกว่า 2,000 เล่มไว้ในของสะสมของเขา"],
+["The country went through major changes during the 1960s and 1970s.","major","a","ประเทศนั้นผ่านการเปลี่ยนแปลงครั้งสำคัญในช่วงทศวรรษ 1960 และ 1970"],
+["We won't be able to manage to see the whole museum in one day.","manage","f","พวกเราคงไม่สามารถชมพิพิธภัณฑ์ทั้งหมดได้ภายในวันเดียว"]
+];
+const previewChoiceText = {
+a:"big; important", b:"collected; gathered", c:"showed; put out for viewing", d:"changed; took away to put something new in", e:"related to today", f:"succeed in doing"
+};
+
+const rc = [
+{
+q:'1. What is another possible title for this reading?',
+opts:['a. “A Man and His Museum”','b. “Beijing’s Best Museum Designer”','c. “Changes in Chinese Architecture”','d. “The Largest Museum in China”'],
+ans:'a. “A Man and His Museum”',
+thaiQ:'1. ชื่อเรื่องอื่นที่เป็นไปได้สำหรับบทอ่านนี้คือข้อใด?',
+thaiOpts:['a. “ชายคนหนึ่งกับพิพิธภัณฑ์ของเขา”','b. “นักออกแบบพิพิธภัณฑ์ที่ดีที่สุดของปักกิ่ง”','c. “การเปลี่ยนแปลงของสถาปัตยกรรมจีน”','d. “พิพิธภัณฑ์ที่ใหญ่ที่สุดในจีน”']
+},
+{
+q:'2. Where is the Songtangzhai Folk Sculpture Museum?',
+opts:['a. In a city near Beijing','b. In an 18th century temple','c. In China’s capital city','d. In Songtang Li’s house'],
+ans:'c. In China’s capital city',
+thaiQ:'2. พิพิธภัณฑ์ประติมากรรมพื้นบ้านซ่งถังไจ๋ตั้งอยู่ที่ใด?',
+thaiOpts:['a. ในเมืองใกล้กรุงปักกิ่ง','b. ในวัดสมัยศตวรรษที่ 18','c. ในเมืองหลวงของประเทศจีน','d. ในบ้านของซ่งถัง หลี่']
+},
+{
+q:'3. What would a visitor NOT see in the Songtangzhai Folk Sculpture Museum?',
+opts:['a. Carved wood and stone','b. Folk art from 1,000 years ago','c. Paintings that Li made in childhood','d. Pieces of decorative architecture'],
+ans:'c. Paintings that Li made in childhood',
+thaiQ:'3. ผู้เข้าชมจะไม่เห็นสิ่งใดในพิพิธภัณฑ์ประติมากรรมพื้นบ้านซ่งถังไจ๋?',
+thaiOpts:['a. งานไม้และหินแกะสลัก','b. ศิลปะพื้นบ้านที่มีอายุ 1,000 ปี','c. ภาพวาดที่หลี่วาดในวัยเด็ก','d. ชิ้นส่วนสถาปัตยกรรมตกแต่ง']
+},
+{
+q:"4. What can be inferred about most of the pieces in Li's collection?",
+opts:['a. He paid a lot of money for them.','b. People took them from demolition sites and gave them to Li.','c. The government was not interested in them.','d. They came from his childhood home.'],
+ans:'c. The government was not interested in them.',
+thaiQ:'4. สามารถอนุมานอะไรได้เกี่ยวกับของส่วนใหญ่ในคอลเลกชันของหลี่?',
+thaiOpts:['a. เขาจ่ายเงินจำนวนมากเพื่อซื้อมัน','b. ผู้คนนำของจากสถานที่รื้อถอนมาให้หลี่','c. รัฐบาลไม่ได้สนใจของเหล่านั้น','d. ของเหล่านั้นมาจากบ้านในวัยเด็กของเขา']
+},
+{
+q:'5. According to Li, what is true about modern Beijing?',
+opts:['a. Ninety percent of it needs to be torn down.','b. Few parts of it are very old.','c. Folk art can be seen in most of it.','d. Not much of it was rebuilt.'],
+ans:'b. Few parts of it are very old.',
+thaiQ:'5. ตามคำกล่าวของหลี่ ข้อใดเป็นจริงเกี่ยวกับปักกิ่งสมัยใหม่?',
+thaiOpts:['a. ร้อยละ 90 ของเมืองยังต้องถูกรื้อถอน','b. มีเพียงไม่กี่ส่วนที่ยังเก่าแก่มาก','c. สามารถเห็นศิลปะพื้นบ้านได้เกือบทั่วเมือง','d. มีเพียงเล็กน้อยที่ถูกสร้างขึ้นใหม่']
+}
+];
+
+const idioms = [
+["set up (something)","to establish or create something","ก่อตั้ง / จัดตั้ง / สร้างขึ้น","After she moved in, the girl set up her bedroom how she liked it.","หลังจากย้ายเข้าไป เด็กผู้หญิงจัดห้องนอนของเธอตามแบบที่ชอบ"],
+["take (something) away","to remove something to some distance away","นำสิ่งใดสิ่งหนึ่งออกไป / เอาออกไป","My mother would take my toys away if I left them in the living room.","แม่ของฉันจะเอาของเล่นของฉันไปเก็บ หากฉันทิ้งมันไว้ในห้องนั่งเล่น"],
+["tear down","to destroy; to break a building into pieces","รื้อถอน / ทำลายอาคาร","My father tore down the old dog house in our backyard and built a new one for our dog.","พ่อของฉันรื้อบ้านสุนัขหลังเก่าในสวนหลังบ้าน แล้วสร้างหลังใหม่ให้สุนัขของเรา"]
+];
+const idiomExercises = [
+["1. When he finally arrived, he discovered that there was nothing left to ________.","take away","เมื่อเขามาถึงในที่สุด เขาพบว่าไม่มีอะไรเหลือให้นำออกไปแล้ว"],
+["2. The teacher needed to ________ her classroom for the new school year.","set up","ครูจำเป็นต้องจัดเตรียมห้องเรียนของเธอสำหรับปีการศึกษาใหม่"],
+["3. The government will not allow anyone to ________ the building because it is a historical treasure.","tear down","รัฐบาลจะไม่อนุญาตให้ใครรื้อถอนอาคารนั้น เพราะเป็นสมบัติทางประวัติศาสตร์"]
+];
+
+const summaryItems = [
+{
+source:[
+"a. Sometimes a private collector decides to set up a museum so that the public can view the works or relics in his or her collection.",
+"b. Since the 1990s, more and more of these museums set up by private collectors have sprung up in China."
+],
+answer:"More and more private collectors have been setting up their own private museums to display their collections, a trend that began in the 1990s in China.",
+thai:"นักสะสมเอกชนจำนวนมากขึ้นเรื่อย ๆ ได้ก่อตั้งพิพิธภัณฑ์ส่วนตัวของตนเองเพื่อจัดแสดงของสะสม ซึ่งเป็นแนวโน้มที่เริ่มขึ้นในประเทศจีนตั้งแต่ทศวรรษ 1990"
+},
+{
+source:[
+"c. In 2001, Li opened his museum in an old 18th century house in Beijing.",
+"d. The museum displays some of the best examples of Chinese folk art he has collected over his lifetime."
+],
+answer:"Li’s museum displaying his collection of Chinese folk art was set up in an 18th century house in 2001.",
+thai:"พิพิธภัณฑ์ของหลี่ซึ่งจัดแสดงคอลเลกชันศิลปะพื้นบ้านจีนของเขา ได้ก่อตั้งขึ้นในบ้านสมัยศตวรรษที่ 18 ในปี 2001"
+},
+{
+source:[
+"e. In the late 1970s, China underwent major economic reforms.",
+"f. According to Li, more than ninety percent of the old houses and temples in Beijing have since been torn down and replaced with modern buildings."
+],
+answer:"Li says that more than ninety percent of the older buildings in the city have been torn down over the years from the time that Beijing began undergoing major economic reforms in the late 1970s.",
+thai:"หลี่กล่าวว่า อาคารเก่าในเมืองมากกว่าร้อยละ 90 ถูกทุบทิ้งตลอดหลายปีที่ผ่านมา นับตั้งแต่ปักกิ่งเริ่มเผชิญการปฏิรูปเศรษฐกิจครั้งสำคัญในช่วงปลายทศวรรษ 1970"
+}
+];
+
+function initNav(){
+  const nav = document.getElementById('nav');
+  pages.forEach((p,i)=>{
+    const btn=document.createElement('button');
+    btn.className='navbtn'+(i===0?' active':'');
+    btn.innerHTML=`<div>${i+1}. ${p[0]}</div><small>${p[1]}</small>`;
+    btn.onclick=()=>showPage(i+1, btn);
+    nav.appendChild(btn);
+  });
+}
+function showPage(n, btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('p'+n).classList.add('active');
+  document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  hideAllReveals();
+  document.querySelectorAll('.pop').forEach(x=>x.remove());
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function shuffle(arr){ return [...arr].sort(()=>Math.random()-.5); }
+function escapeReg(str){ return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+function buildVocab(){
+  const t=document.getElementById('vocabTable');
+  t.innerHTML = `
+    <tr><th>#</th><th>English</th><th>Part of Speech</th><th>คำอ่าน</th><th>คำแปล</th></tr>
+    ${vocab.map((v,i)=>`
+      <tr>
+        <td>${i+1}</td>
+        <td><div class="vocab-word"><span class="emoji">${getEmoji(v[0])}</span><span>${v[0]}</span></div></td>
+        <td>${v[1]}</td>
+        <td>${v[2]}</td>
+        <td>${v[3]}</td>
+      </tr>`).join('')}`;
+}
+
+let quizList=[], quizIndex=0, quizScore=0, quizLocked=false;
+function startVocabQuiz(){
+  quizList = shuffle(vocab).slice(0,10);
+  quizIndex = 0; quizScore = 0; quizLocked = false;
+  renderVocabQuestion();
+}
+function renderVocabQuestion(){
+  const box=document.getElementById('quizBox');
+  document.getElementById('quizScore').textContent = `คะแนน: ${quizScore}`;
+  document.getElementById('quizCount').textContent = `ข้อ: ${Math.min(quizIndex+1,10)}/10`;
+  if(quizIndex >= quizList.length){
+    box.innerHTML = `
+      <div class="quiz-card">
+        <div class="quiz-hint">🏆</div>
+        <div class="quiz-title">ทำครบแล้ว</div>
+        <div class="quiz-sub">คะแนนรวมของคุณคือ <b>${quizScore}/10</b></div>
+        <button class="btn" onclick="startVocabQuiz()">เริ่มใหม่อีกครั้ง</button>
+      </div>`;
+    return;
+  }
+  const item = quizList[quizIndex];
+  const wrong = shuffle(vocab.filter(v=>v[0]!==item[0])).slice(0,3).map(v=>v[0]);
+  const options = shuffle([item[0], ...wrong]);
+  quizLocked = false;
+  box.innerHTML = `
+    <div class="quiz-card">
+      <div class="quiz-progress">Question ${quizIndex+1} of 10</div>
+      <div class="quiz-hint">${getEmoji(item[0])}</div>
+      <div class="quiz-title">คำใดมีความหมายว่า</div>
+      <div class="quiz-sub"><span class="badge">${item[3]}</span></div>
+      <div class="option-grid">
+        ${options.map((o,idx)=>`<button class="choice" data-word="${o.replace(/"/g,'&quot;')}"><span>${String.fromCharCode(65+idx)}</span>${o}</button>`).join('')}
+      </div>
+      <div class="feedback" id="quizFeedback"></div>
+      <div style="margin-top:16px"><button class="btn" id="quizNext" style="display:none" onclick="nextQuiz()">ข้อต่อไป</button></div>
+    </div>`;
+  document.querySelectorAll('.choice').forEach(btn=>{
+    btn.addEventListener('click', ()=>answerQuiz(btn, btn.dataset.word, item[0]));
+  });
+}
+function answerQuiz(btn, selected, correct){
+  if(quizLocked) return;
+  quizLocked = true;
+  const buttons=[...document.querySelectorAll('.choice')];
+  buttons.forEach(b=>b.disabled=true);
+  const fb=document.getElementById('quizFeedback');
+  if(selected===correct){
+    quizScore++; btn.classList.add('correct');
+    fb.textContent='✅ ถูกต้อง'; fb.style.color='var(--success)';
+  }else{
+    btn.classList.add('wrong');
+    const right = buttons.find(b=>b.dataset.word===correct);
+    if(right) right.classList.add('correct');
+    fb.textContent = `❌ คำตอบที่ถูกคือ ${correct}`; fb.style.color='var(--danger)';
+  }
+  document.getElementById('quizScore').textContent = `คะแนน: ${quizScore}`;
+  document.getElementById('quizNext').style.display = 'inline-flex';
+}
+function nextQuiz(){ quizIndex++; renderVocabQuestion(); }
+
+let memCards=[], openCards=[], memMoves=0, memMatches=0, memLock=false;
+function newMemoryGame(){
+  const selected = shuffle(vocab).slice(0,8);
+  memCards = shuffle(selected.flatMap((v,i)=>[
+    {id:i, text:`${getEmoji(v[0])} ${v[0]}`},
+    {id:i, text:v[3]}
+  ]));
+  openCards=[]; memMoves=0; memMatches=0; memLock=false;
+  document.getElementById('moves').textContent='Moves: 0';
+  document.getElementById('matches').textContent='Matches: 0/8';
+  const board=document.getElementById('memoryBoard');
+  board.innerHTML = memCards.map((c,idx)=>`<button class="mem-card front" data-index="${idx}">✦</button>`).join('');
+  board.querySelectorAll('.mem-card').forEach(btn=>btn.addEventListener('click', ()=>flipCard(btn)));
+}
+function flipCard(btn){
+  if(memLock) return;
+  const idx = Number(btn.dataset.index);
+  const card = memCards[idx];
+  if(btn.classList.contains('matched') || btn.classList.contains('open')) return;
+  btn.classList.remove('front'); btn.classList.add('open'); btn.textContent = card.text;
+  openCards.push({btn,card});
+  if(openCards.length===2){
+    memMoves++; document.getElementById('moves').textContent=`Moves: ${memMoves}`;
+    const [a,b]=openCards;
+    if(a.card.id===b.card.id){
+      a.btn.classList.add('matched'); b.btn.classList.add('matched');
+      memMatches++; document.getElementById('matches').textContent=`Matches: ${memMatches}/8`;
+      openCards=[];
+    }else{
+      memLock=true;
+      setTimeout(()=>{
+        [a.btn,b.btn].forEach(x=>{x.classList.add('front'); x.classList.remove('open'); x.textContent='✦';});
+        openCards=[]; memLock=false;
+      },700);
+    }
+  }
+}
+
+function markTarget(sentence, target){
+  return sentence.replace(new RegExp(escapeReg(target), 'i'), m=>`<span class="under">${m}</span>`);
+}
+function toggleReveal(id, group, event){
+  event.stopPropagation();
+  document.querySelectorAll('.reveal').forEach(el=>{ if(el.dataset.group!==group) el.classList.remove('show'); });
+  const box=document.getElementById(id); if(box) box.classList.toggle('show');
+}
+function hideAllReveals(){ document.querySelectorAll('.reveal').forEach(x=>x.classList.remove('show')); }
+
+function buildPreview(){
+  document.getElementById('previewBox').innerHTML = preview.map((x,i)=>{
+    const group=`pv-${i}`;
+    return `
+      <div class="preview-item">
+        <div><b>${markTarget(x[0], x[1])}</b></div>
+        <div class="action-row">
+          <button class="mini-btn translation" onclick="toggleReveal('pv-th-${i}','${group}',event)">🌐 แสดงคำแปล</button>
+          <button class="mini-btn answer" onclick="toggleReveal('pv-ans-${i}','${group}',event)">✅ แสดงคำตอบ</button>
+        </div>
+        <div class="reveal translation" id="pv-th-${i}" data-group="${group}"><b>คำแปล:</b> ${x[3]}</div>
+        <div class="reveal answer" id="pv-ans-${i}" data-group="${group}"><b>Answer:</b> ${x[2]}. ${previewChoiceText[x[2]]}</div>
+      </div>`;
+  }).join('');
+}
+
+function buildReading(){
+  document.getElementById('readingPlain').innerHTML = reading.map((s,i)=>`<div class="sentence"><b>${i+1}.</b> ${s}</div>`).join('');
+  document.getElementById('readingTranslated').innerHTML = reading.map((s,i)=>`
+    <div class="sentence">
+      <div><b>${i+1}. ${s}</b></div>
+      <div class="thai">${thaiReading[i]}</div>
+    </div>`).join('');
+}
+function clickableText(text){
+  let out=text;
+  [...vocab].sort((a,b)=>b[0].length-a[0].length).forEach(v=>{
+    const re=new RegExp(`\\b${escapeReg(v[0])}\\b`, 'gi');
+    out = out.replace(re, m=>`<span class="word" data-meaning="${v[3]}">${m}</span>`);
+  });
+  return out;
+}
+function buildClickable(){
+  const holder=document.getElementById('readingClickable');
+  holder.innerHTML = reading.map((s,i)=>`<div class="sentence"><b>${i+1}.</b> ${clickableText(s)}</div>`).join('');
+  holder.querySelectorAll('.word').forEach(w=>w.addEventListener('click', e=>{e.stopPropagation(); showPop(w, w.dataset.meaning);}));
+}
+function showPop(el,text){
+  document.querySelectorAll('.pop').forEach(x=>x.remove());
+  const rect = el.getBoundingClientRect();
+  const pop = document.createElement('div');
+  pop.className='pop'; pop.textContent=text;
+  pop.style.left=(rect.left + window.scrollX)+'px';
+  pop.style.top=(rect.bottom + window.scrollY + 8)+'px';
+  document.body.appendChild(pop);
+}
+
+function buildRC(){
+  document.getElementById('rcBox').innerHTML = rc.map((q,i)=>{
+    const group=`rc-${i}`;
+    return `
+      <div class="qa">
+        <div><b>${q.q}</b></div>
+        <div class="rc-choices">${q.opts.map(o=>`<div>${o}</div>`).join('')}</div>
+        <div class="action-row">
+          <button class="mini-btn translation" onclick="toggleReveal('rc-th-${i}','${group}',event)">🌐 แสดงคำแปล</button>
+          <button class="mini-btn answer" onclick="toggleReveal('rc-ans-${i}','${group}',event)">✅ แสดงคำตอบ</button>
+        </div>
+        <div class="reveal translation" id="rc-th-${i}" data-group="${group}"><b>${q.thaiQ}</b><div style="margin-top:8px">${q.thaiOpts.map(o=>`<div>${o}</div>`).join('')}</div></div>
+        <div class="reveal answer" id="rc-ans-${i}" data-group="${group}"><b>Answer:</b> ${q.ans}</div>
+      </div>`;
+  }).join('');
+}
+
+function buildIdioms(){
+  const holder=document.getElementById('idiomBox');
+  let html = '<h3>Find these idioms in the reading.</h3>';
+  html += idioms.map((it,i)=>{
+    const group=`id-${i}`;
+    return `
+      <div class="idiom">
+        <div><b>${it[0]}</b></div>
+        <div class="note" style="margin-top:8px">${it[3]}</div>
+        <div class="action-row">
+          <button class="mini-btn translation" onclick="toggleReveal('id-th-${i}','${group}',event)">🌐 แสดงคำแปล</button>
+          <button class="mini-btn answer" onclick="toggleReveal('id-ans-${i}','${group}',event)">✅ แสดงคำตอบ</button>
+        </div>
+        <div class="reveal translation" id="id-th-${i}" data-group="${group}"><b>คำแปลสำนวน:</b> ${it[2]}<br><b>คำแปลประโยคตัวอย่าง:</b> ${it[4]}</div>
+        <div class="reveal answer" id="id-ans-${i}" data-group="${group}"><b>Meaning:</b> ${it[1]}</div>
+      </div>`;
+  }).join('');
+  html += '<h3 style="margin-top:22px">Fill in the blank</h3>';
+  html += idiomExercises.map((ex,i)=>{
+    const group=`iex-${i}`;
+    return `
+      <div class="qa">
+        <div><b>${ex[0]}</b></div>
+        <div class="action-row">
+          <button class="mini-btn translation" onclick="toggleReveal('iex-th-${i}','${group}',event)">🌐 แสดงคำแปล</button>
+          <button class="mini-btn answer" onclick="toggleReveal('iex-ans-${i}','${group}',event)">✅ แสดงคำตอบ</button>
+        </div>
+        <div class="reveal translation" id="iex-th-${i}" data-group="${group}"><b>คำแปล:</b> ${ex[2]}</div>
+        <div class="reveal answer" id="iex-ans-${i}" data-group="${group}"><b>Answer:</b> ${ex[1]}</div>
+      </div>`;
+  }).join('');
+  holder.innerHTML = html;
+}
+
+function buildSummary(){
+  document.getElementById('summaryBox').innerHTML = summaryItems.map((s,i)=>{
+    const group=`sum-${i}`;
+    return `
+      <div class="summary-block">
+        <div class="badge">Summary ${i+1}</div>
+        ${s.source.map(line=>`<div class="summary-source">${line}</div>`).join('')}
+        <div class="action-row">
+          <button class="mini-btn translation" onclick="toggleReveal('sum-th-${i}','${group}',event)">🌐 แสดงคำแปล</button>
+          <button class="mini-btn answer" onclick="toggleReveal('sum-ans-${i}','${group}',event)">✅ แสดงคำตอบ</button>
+        </div>
+        <div class="reveal translation" id="sum-th-${i}" data-group="${group}"><b>คำแปลสรุป:</b> ${s.thai}</div>
+        <div class="reveal answer" id="sum-ans-${i}" data-group="${group}"><b>Answer:</b> ${s.answer}</div>
+      </div>`;
+  }).join('');
+}
+
+document.addEventListener('click',()=>{
+  hideAllReveals();
+  document.querySelectorAll('.pop').forEach(x=>x.remove());
+});
+
+initNav();
+buildVocab();
+startVocabQuiz();
+newMemoryGame();
+buildPreview();
+buildReading();
+buildClickable();
+buildRC();
+buildIdioms();
+buildSummary();
+</script>
+</body>
+</html>
